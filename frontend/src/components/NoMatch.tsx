@@ -1,7 +1,7 @@
 import { useLocation } from "react-router";
 
 const NoMatch = () => {
-  let location = useLocation();
+  const location = useLocation();
 
   return (
     <div>
