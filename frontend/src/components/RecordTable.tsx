@@ -1,4 +1,5 @@
 import Table from "react-bootstrap/Table";
+import { TaskType, SentenceType } from "./types";
 
 const RecordTableHeader = () => {
   return (
@@ -18,13 +19,13 @@ const RecordTableBody = () => {
 	  <tr className="fs-4">
 	    <td>text</td>
 	    <td>start/stop button</td>
-		<td>audio controller</td>
+		<td>audio controller for replay</td>
 	  </tr>
 	</tbody>
   );
 }
 
-const RecordTable = (props: any) => {
+const RecordTable = () => {
   return (
     <Table>
       <RecordTableHeader />

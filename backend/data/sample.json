@@ -1,0 +1,28 @@
+[
+  {
+    "task_id": "sample_task_1",
+    "sentences": [
+      {
+          "sentence_id": 1,
+          "sentence": "This is sample sentence 1 from sample_task_1."
+      },
+      {
+          "sentence_id": 2,
+          "sentence": "This is sample sentence 2 from sample_task_1."
+      }
+	]
+  },
+  {
+    "task_id": "sample_task_2",
+    "sentences": [
+      {
+          "sentence_id": 1,
+          "sentence": "This is sample sentence 1 from sample_task_2."
+      },
+      {
+          "sentence_id": 2,
+          "sentence": "This is sample sentence 2 from sample_task_2."
+      }
+	]
+  }
+]
