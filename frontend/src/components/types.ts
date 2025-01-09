@@ -1,5 +1,5 @@
 export interface SentenceEntity {
-  sentenceId: number;
+  sentenceId: string;
   sentence: string;
   willSubmit: boolean;
 }

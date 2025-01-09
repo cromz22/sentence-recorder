@@ -1,10 +1,10 @@
 [
     {
-        "sentence_id": 1,
+        "sentenceId": "sample1_sentence1",
         "sentence": "This is sample sentence 1 from sample1.json."
     },
     {
-        "sentence_id": 2,
+        "sentenceId": "sample1_sentence2",
         "sentence": "This is sample sentence 2 from sample1.json."
     }
 ]
