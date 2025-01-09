@@ -7,12 +7,12 @@ import config from "../config.json";
 
 const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
-  const [task, setTask] = useState<TaskType | null>(null);
+  const [sentences, setSentences] = useState<SentenceType[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [agreed, setAgreed] = useState(false);
 
   useEffect(() => {
-    const fetchTask = async () => {
+    const fetchSentences = async () => {
       try {
         const response = await fetch(
           `${config.backendUrl}/read-json/${taskId}`,
@@ -20,20 +20,20 @@ const Task = () => {
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-        const data: taskType = await response.json();
-        setTask(data);
+        const sentences: SentenceType[] = await response.json();
+        setSentences(sentences);
       } catch (err: any) {
         setError(err.message);
       }
     };
-    fetchTask();
+    fetchSentences();
   }, [taskId]);
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  if (!task) {
+  if (!sentences) {
     return <div>Loading...</div>;
   }
 
@@ -41,7 +41,7 @@ const Task = () => {
     <div className="Task">
       <Container className="my-5 text-center">
         <TaskDescription setAgreed={setAgreed} />
-        <RecordTable />
+        <RecordTable sentences={sentences} />
       </Container>
     </div>
   );

@@ -1,5 +1,6 @@
+import React from "react";
 import Table from "react-bootstrap/Table";
-import { TaskType, SentenceType } from "./types";
+import { SentenceType } from "./types";
 
 const RecordTableHeader = () => {
   return (
@@ -13,23 +14,32 @@ const RecordTableHeader = () => {
   );
 };
 
-const RecordTableBody = () => {
+const RecordTableBody: React.FC<{ sentences: SentenceType[] }> = ({ sentences }) => {
   return (
     <tbody>
-      <tr className="fs-4">
-        <td>text</td>
-        <td>start/stop button</td>
-        <td>audio controller for replay</td>
-      </tr>
+      {sentences.map((sentence) => (
+        <tr key={sentence.sentence_id} className="fs-4">
+          <td>{sentence.sentence}</td>
+          <td>
+            <button>Start</button> / <button>Stop</button>
+          </td>
+          <td>
+            <audio controls>
+              <source src={`#`} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </td>
+        </tr>
+      ))}
     </tbody>
   );
 };
 
-const RecordTable = () => {
+const RecordTable: React.FC<SentenceType[]> = ({ sentences }) => {
   return (
     <Table>
       <RecordTableHeader />
-      <RecordTableBody />
+      <RecordTableBody sentences={sentences} />
     </Table>
   );
 };
