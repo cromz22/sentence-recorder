@@ -10,20 +10,20 @@ const StartStopButton: React.FC<{
   status: string;
   startRecording: () => void;
   stopRecording: () => void;
-  isRecordingSomewhere: boolean;
-  setIsRecordingSomewhere: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ status, startRecording, stopRecording, isRecordingSomewhere, setIsRecordingSomewhere }) => {
+  isRecordingElsewhere: boolean;
+  setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ status, startRecording, stopRecording, isRecordingElsewhere, setIsRecordingElsewhere }) => {
   useEffect(() => {
-    if (status === "recording") setIsRecordingSomewhere(true);
-    if (status === "stopped") setIsRecordingSomewhere(false);
+    if (status === "recording") setIsRecordingElsewhere(true);
+    if (status === "stopped") setIsRecordingElsewhere(false);
   }, [status]);
 
   return (
     <IconButton
       onClick={status === "recording" ? stopRecording : startRecording}
-      disabled={isRecordingSomewhere && status !== "recording"}
+      disabled={isRecordingElsewhere && status !== "recording"}
     >
-      {isRecordingSomewhere && status !== "recording" ? (
+      {isRecordingElsewhere && status !== "recording" ? (
         <MicIcon color="disabled" />
       ) : status === "recording" ? (
         <StopIcon color="error" />
@@ -36,10 +36,10 @@ const StartStopButton: React.FC<{
 
 const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
-  isRecordingSomewhere: boolean;
-  setIsRecordingSomewhere: React.Dispatch<React.SetStateAction<boolean>>;
+  isRecordingElsewhere: boolean;
+  setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
   onSelectionChange: (id: number, isSelected: boolean) => void;
-}> = ({ sentenceEntity, isRecordingSomewhere, setIsRecordingSomewhere, onSelectionChange }) => {
+}> = ({ sentenceEntity, isRecordingElsewhere, setIsRecordingElsewhere, onSelectionChange }) => {
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isChecked, setIsChecked] = useState(sentenceEntity.isSelected);
@@ -66,8 +66,8 @@ const RecordTableRow: React.FC<{
           status={status}
           startRecording={startRecording}
           stopRecording={stopRecording}
-          isRecordingSomewhere={isRecordingSomewhere}
-          setIsRecordingSomewhere={setIsRecordingSomewhere}
+          isRecordingElsewhere={isRecordingElsewhere}
+          setIsRecordingElsewhere={setIsRecordingElsewhere}
         />
       </td>
       <td>
@@ -97,7 +97,7 @@ const RecordTableHeader: React.FC = () => (
 );
 
 const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => {
-  const [isRecordingSomewhere, setIsRecordingSomewhere] = useState<boolean>(false);
+  const [isRecordingElsewhere, setIsRecordingElsewhere] = useState<boolean>(false);
   const [selectedSentences, setSelectedSentences] = useState<SentenceEntity[]>(sentences);
 
   const handleSelectionChange = (id: number, isSelected: boolean) => {
@@ -114,8 +114,8 @@ const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences 
         <RecordTableRow
           key={sentenceEntity.sentenceId}
           sentenceEntity={sentenceEntity}
-          isRecordingSomewhere={isRecordingSomewhere}
-          setIsRecordingSomewhere={setIsRecordingSomewhere}
+          isRecordingElsewhere={isRecordingElsewhere}
+          setIsRecordingElsewhere={setIsRecordingElsewhere}
 		  onSelectionChange={handleSelectionChange}
         />
       ))}
