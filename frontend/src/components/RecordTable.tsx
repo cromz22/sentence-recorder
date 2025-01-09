@@ -14,22 +14,22 @@ const RecordTableHeader = () => {
 };
 
 const RecordTableBody = () => {
-  return(
-	<tbody>
-	  <tr className="fs-4">
-	    <td>text</td>
-	    <td>start/stop button</td>
-		<td>audio controller for replay</td>
-	  </tr>
-	</tbody>
+  return (
+    <tbody>
+      <tr className="fs-4">
+        <td>text</td>
+        <td>start/stop button</td>
+        <td>audio controller for replay</td>
+      </tr>
+    </tbody>
   );
-}
+};
 
 const RecordTable = () => {
   return (
     <Table>
       <RecordTableHeader />
-	  <RecordTableBody />
+      <RecordTableBody />
     </Table>
   );
 };

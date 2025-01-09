@@ -8,7 +8,10 @@ interface AgreeCheckboxProps {
   agreeLabel: string;
 }
 
-const AgreeCheckbox: React.FC<AgreeCheckboxProps> = ({ setAgreed, agreeLabel }) => {
+const AgreeCheckbox: React.FC<AgreeCheckboxProps> = ({
+  setAgreed,
+  agreeLabel,
+}) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

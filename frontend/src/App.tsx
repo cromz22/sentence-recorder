@@ -1,15 +1,11 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 
 import Task from "./components/Task";
 import Finished from "./components/Finished";
 import NoMatch from "./components/NoMatch";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
   return (
