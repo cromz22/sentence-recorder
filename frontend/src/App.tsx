@@ -9,6 +9,8 @@ import Task from "./components/Task";
 import Finished from "./components/Finished";
 import NoMatch from "./components/NoMatch";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const App = () => {
   return (
     <Router>
