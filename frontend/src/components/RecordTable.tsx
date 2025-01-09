@@ -103,7 +103,7 @@ const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences 
   const handleSelectionChange = (id: number, isSelected: boolean) => {
     setSelectedSentences((prev) =>
       prev.map((sentence) =>
-        sentence.sentence_id === id ? { ...sentence, isSelected } : sentence
+        sentence.sentenceId === id ? { ...sentence, isSelected } : sentence
       )
     );
   };
