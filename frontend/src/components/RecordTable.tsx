@@ -38,13 +38,25 @@ const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
   isRecordingSomewhere: boolean;
   setIsRecordingSomewhere: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ sentenceEntity, isRecordingSomewhere, setIsRecordingSomewhere }) => {
+  onSelectionChange: (id: number, isSelected: boolean) => void;
+}> = ({ sentenceEntity, isRecordingSomewhere, setIsRecordingSomewhere, onSelectionChange }) => {
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isChecked, setIsChecked] = useState(sentenceEntity.isSelected);
 
   useEffect(() => {
-    if (mediaBlobUrl) setAudioUrl(mediaBlobUrl);
+    if (mediaBlobUrl) {
+		setAudioUrl(mediaBlobUrl);
+		setIsChecked(true);
+		onSelectionChange(sentenceEntity.sentenceId, true);
+	}
   }, [mediaBlobUrl]);
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setIsChecked(checked);
+    onSelectionChange(sentence.sentenceId, checked);
+  };
 
   return (
     <tr className="fs-4">
@@ -61,6 +73,14 @@ const RecordTableRow: React.FC<{
       <td>
         <audio src={audioUrl || "#"} controls />
       </td>
+	  <td>
+	    <input
+		  type="checkbox"
+		  checked={isChecked}
+		  onChange={handleCheckboxChange}
+		  aria-label="Submit this sentence"
+		/>
+	  </td>
     </tr>
   );
 };
@@ -71,21 +91,32 @@ const RecordTableHeader: React.FC = () => (
       <td>Sentences to record</td>
       <td>Record / Stop</td>
       <td>Check the audio</td>
+	  <td>Submit the audio</td>
     </tr>
   </thead>
 );
 
 const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => {
   const [isRecordingSomewhere, setIsRecordingSomewhere] = useState<boolean>(false);
+  const [selectedSentences, setSelectedSentences] = useState<SentenceEntity[]>(sentences);
+
+  const handleSelectionChange = (id: number, isSelected: boolean) => {
+    setSelectedSentences((prev) =>
+      prev.map((sentence) =>
+        sentence.sentence_id === id ? { ...sentence, isSelected } : sentence
+      )
+    );
+  };
 
   return (
     <tbody>
       {sentences.map((sentenceEntity) => (
         <RecordTableRow
-          key={sentenceEntity.sentence_id}
+          key={sentenceEntity.sentenceId}
           sentenceEntity={sentenceEntity}
           isRecordingSomewhere={isRecordingSomewhere}
           setIsRecordingSomewhere={setIsRecordingSomewhere}
+		  onSelectionChange={handleSelectionChange}
         />
       ))}
     </tbody>
