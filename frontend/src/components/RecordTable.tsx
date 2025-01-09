@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import { useReactMediaRecorder } from "../utils/ReactMediaRecorder";
-import { SentenceType } from "./types";
+import { SentenceEntity } from "./types";
 
 const StartStopButton: React.FC<{
   status: string;
@@ -35,10 +35,10 @@ const StartStopButton: React.FC<{
 };
 
 const RecordTableRow: React.FC<{
-  sentence: SentenceType;
+  sentenceEntity: SentenceEntity;
   isRecordingSomewhere: boolean;
   setIsRecordingSomewhere: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ sentence, isRecordingSomewhere, setIsRecordingSomewhere }) => {
+}> = ({ sentenceEntity, isRecordingSomewhere, setIsRecordingSomewhere }) => {
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
@@ -48,7 +48,7 @@ const RecordTableRow: React.FC<{
 
   return (
     <tr className="fs-4">
-      <td>{sentence.sentence}</td>
+      <td>{sentenceEntity.sentence}</td>
       <td>
         <StartStopButton
           status={status}
@@ -75,15 +75,15 @@ const RecordTableHeader: React.FC = () => (
   </thead>
 );
 
-const RecordTableBody: React.FC<{ sentences: SentenceType[] }> = ({ sentences }) => {
+const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => {
   const [isRecordingSomewhere, setIsRecordingSomewhere] = useState<boolean>(false);
 
   return (
     <tbody>
-      {sentences.map((sentence) => (
+      {sentences.map((sentenceEntity) => (
         <RecordTableRow
-          key={sentence.sentence_id}
-          sentence={sentence}
+          key={sentenceEntity.sentence_id}
+          sentenceEntity={sentenceEntity}
           isRecordingSomewhere={isRecordingSomewhere}
           setIsRecordingSomewhere={setIsRecordingSomewhere}
         />
@@ -92,7 +92,7 @@ const RecordTableBody: React.FC<{ sentences: SentenceType[] }> = ({ sentences })
   );
 };
 
-const RecordTable: React.FC<{ sentences: SentenceType[] }> = ({ sentences }) => (
+const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => (
   <Table>
     <RecordTableHeader />
     <RecordTableBody sentences={sentences} />
