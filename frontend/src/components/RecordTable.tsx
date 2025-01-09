@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
+import Form from "react-bootstrap/Form";
 import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
@@ -34,6 +35,27 @@ const StartStopButton: React.FC<{
   );
 };
 
+const RecordCheckbox: React.FC<{
+  isChecked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+}> = ({ isChecked, onChange, label }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	onChange(e.target.checked);
+  }
+
+  return (
+	<Form>
+	  <Form.Check
+	    type="checkbox"
+		label={label}
+		checked={isChecked}
+		onChange={handleChange}
+	  />
+	</Form>
+  )
+}
+
 const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
   isRecordingElsewhere: boolean;
@@ -42,7 +64,7 @@ const RecordTableRow: React.FC<{
 }> = ({ sentenceEntity, isRecordingElsewhere, setIsRecordingElsewhere, onSelectionChange }) => {
   const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isChecked, setIsChecked] = useState(sentenceEntity.isSelected);
+  const [isChecked, setIsChecked] = useState<boolean>(!!sentenceEntity.isSelected);
 
   useEffect(() => {
     if (mediaBlobUrl) {
@@ -51,12 +73,6 @@ const RecordTableRow: React.FC<{
 		onSelectionChange(sentenceEntity.sentenceId, true);
 	}
   }, [mediaBlobUrl]);
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
-    setIsChecked(checked);
-    onSelectionChange(sentence.sentenceId, checked);
-  };
 
   return (
     <tr className="fs-4">
@@ -74,11 +90,12 @@ const RecordTableRow: React.FC<{
         <audio src={audioUrl || "#"} controls />
       </td>
 	  <td>
-	    <input
-		  type="checkbox"
-		  checked={isChecked}
-		  onChange={handleCheckboxChange}
-		  aria-label="Submit this sentence"
+	    <RecordCheckbox
+		  isChecked={isChecked}
+		  onChange={(checked) => {
+	        setIsChecked(checked);
+			onSelectionChange(sentenceEntity.sentenceId, checked);
+		  }}
 		/>
 	  </td>
     </tr>
