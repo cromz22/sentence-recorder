@@ -65,7 +65,7 @@ const Task = () => {
     );
 
     try {
-      const response = await fetch(`${config.backendUrl}/submit-recordings`, {
+      const response = await fetch(`${config.backendUrl}/submit-recordings/${taskId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),

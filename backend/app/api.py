@@ -27,11 +27,11 @@ async def read_root() -> dict:
     return {"message": "connected to backend"}
 
 
-@app.get("/read-json/{json_stem}")
-def read_json(json_stem: str):
+@app.get("/read-json/{task_id}")
+def read_json(task_id: str):
     json_dir = Path("data/json")
     try:
-        json_file = json_dir / f"{json_stem}.json"
+        json_file = json_dir / f"{task_id}.json"
         with open(json_file, "r", encoding="utf-8") as f:
             content = json.load(f)
 
@@ -40,7 +40,7 @@ def read_json(json_stem: str):
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON format: {json_stem}.json.")
+        raise HTTPException(status_code=400, detail=f"Invalid JSON format: {task_id}.json.")
 
 
 class Recording(BaseModel):
@@ -48,9 +48,9 @@ class Recording(BaseModel):
     audioUrl: str
 
 
-@app.post("/submit-recordings")
-async def submit_recordings(recordings: list[Recording]):
-    audio_dir = Path("data/audio")
+@app.post("/submit-recordings/{task_id}")
+async def submit_recordings(recordings: list[Recording], task_id: str):
+    audio_dir = Path(f"data/audio/{task_id}")
     audio_dir.mkdir(parents=True, exist_ok=True)
 
     if not recordings:
