@@ -6,6 +6,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import { useReactMediaRecorder } from "../utils/ReactMediaRecorder";
 import { SentenceEntity } from "./types";
+import config from "../config.json";
 
 const StartStopButton: React.FC<{
   status: string;
@@ -66,7 +67,7 @@ const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
   isRecordingElsewhere: boolean;
   setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectionChange: (id: number, isSelected: boolean) => void;
+  onSelectionChange: (id: number, audioUrl: string | null, isChecked: boolean) => void;
 }> = ({
   sentenceEntity,
   isRecordingElsewhere,
@@ -84,7 +85,7 @@ const RecordTableRow: React.FC<{
     if (mediaBlobUrl) {
       setAudioUrl(mediaBlobUrl);
       setIsChecked(true);
-      onSelectionChange(sentenceEntity.sentenceId, true);
+      onSelectionChange(sentenceEntity.sentenceId, mediaBlobUrl, true);
     }
   }, [mediaBlobUrl]);
 
@@ -108,7 +109,7 @@ const RecordTableRow: React.FC<{
           isChecked={isChecked}
           onChange={(checked) => {
             setIsChecked(checked);
-            onSelectionChange(sentenceEntity.sentenceId, checked);
+            onSelectionChange(sentenceEntity.sentenceId, audioUrl, checked);
           }}
         />
       </td>
@@ -127,21 +128,31 @@ const RecordTableHeader: React.FC = () => (
   </thead>
 );
 
-const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({
-  sentences,
-}) => {
+const RecordTableBody: React.FC<{
+  sentences: SentenceEntity[];
+  onSubmissionUpdate: (data: { sentenceId: number; audioUrl: string }[]) => void;
+}> = ({ sentences, onSubmissionUpdate }) => {
   const [isRecordingElsewhere, setIsRecordingElsewhere] =
     useState<boolean>(false);
-  const [selectedSentences, setSelectedSentences] =
-    useState<SentenceEntity[]>(sentences);
+  const [recordedData, setRecordedData] = useState<
+    { sentenceId: number; audioUrl: string; isChecked: boolean }[]
+  >([]);
 
-  const handleSelectionChange = (id: number, isSelected: boolean) => {
-    setSelectedSentences((prev) =>
-      prev.map((sentence) =>
-        sentence.sentenceId === id ? { ...sentence, isSelected } : sentence,
-      ),
+  const handleSelectionChange = (id: number, audioUrl: string | null, isChecked: boolean) => {
+    setRecordedData((prev) =>
+      audioUrl
+        ? [
+            ...prev.filter((item) => item.sentenceId !== id),
+            { sentenceId: id, audioUrl, isChecked },
+          ]
+        : prev.filter((item) => item.sentenceId !== id),
     );
   };
+
+  useEffect(() => {
+    // Filter and send only checked recordings
+    onSubmissionUpdate(recordedData.filter((data) => data.isChecked));
+  }, [recordedData]);
 
   return (
     <tbody>
@@ -151,20 +162,72 @@ const RecordTableBody: React.FC<{ sentences: SentenceEntity[] }> = ({
           sentenceEntity={sentenceEntity}
           isRecordingElsewhere={isRecordingElsewhere}
           setIsRecordingElsewhere={setIsRecordingElsewhere}
-          onSelectionChange={handleSelectionChange}
+          onSelectionChange={(id, audioUrl, isChecked) =>
+            handleSelectionChange(id, audioUrl, isChecked)
+          }
         />
       ))}
     </tbody>
   );
 };
 
-const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({
-  sentences,
-}) => (
-  <Table>
-    <RecordTableHeader />
-    <RecordTableBody sentences={sentences} />
-  </Table>
-);
+const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => {
+  const [submittedData, setSubmittedData] = useState<
+    { sentenceId: number; audioUrl: string }[]
+  >([]);
+
+  const handleSubmit = async () => {
+	const formattedData = await Promise.all(
+	  submittedData.map(async (data) => {
+	    const response = await fetch(data.audioUrl);
+		const blob = await response.blob();
+		const reader = new FileReader();
+
+		const base64String = await new Promise<string>((resolve, reject) => {
+		  reader.onloadend = () => resolve(reader.result as string);
+		  reader.onerror = reject;
+		  reader.readAsDataURL(blob);
+		});
+
+		return {
+		  sentenceId: data.sentenceId,
+		  audioUrl: base64String,
+		};
+	  })
+	);
+
+    try {
+      const response = await fetch(`${config.backendUrl}/submit-recordings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formattedData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to submit: ${response.statusText}`);
+      }
+
+      alert("Submission successful!");
+    } catch (error) {
+      console.error("Error during submission:", error);
+      alert("Failed to submit recordings.");
+    }
+  };
+
+  return (
+    <div>
+      <Table>
+        <RecordTableHeader />
+        <RecordTableBody
+          sentences={sentences}
+          onSubmissionUpdate={setSubmittedData}
+        />
+      </Table>
+      <button onClick={handleSubmit} className="btn btn-primary">
+        Submit All Checked Recordings
+      </button>
+    </div>
+  );
+};
 
 export default RecordTable;
