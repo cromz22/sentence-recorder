@@ -68,7 +68,11 @@ const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
   isRecordingElsewhere: boolean;
   setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectionChange: (id: string, audioUrl: string | null, isChecked: boolean) => void;
+  onSelectionChange: (
+    id: string,
+    audioUrl: string | null,
+    isChecked: boolean,
+  ) => void;
 }> = ({
   sentenceEntity,
   isRecordingElsewhere,
@@ -131,7 +135,9 @@ const RecordTableHeader: React.FC = () => (
 
 const RecordTableBody: React.FC<{
   sentences: SentenceEntity[];
-  onSubmissionUpdate: (data: { sentenceId: string; audioUrl: string }[]) => void;
+  onSubmissionUpdate: (
+    data: { sentenceId: string; audioUrl: string }[],
+  ) => void;
 }> = ({ sentences, onSubmissionUpdate }) => {
   const [isRecordingElsewhere, setIsRecordingElsewhere] =
     useState<boolean>(false);
@@ -139,7 +145,11 @@ const RecordTableBody: React.FC<{
     { sentenceId: string; audioUrl: string; isChecked: boolean }[]
   >([]);
 
-  const handleSelectionChange = (id: string, audioUrl: string | null, isChecked: boolean) => {
+  const handleSelectionChange = (
+    id: string,
+    audioUrl: string | null,
+    isChecked: boolean,
+  ) => {
     setRecordedData((prev) =>
       audioUrl
         ? [
@@ -172,7 +182,9 @@ const RecordTableBody: React.FC<{
   );
 };
 
-const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => {
+const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({
+  sentences,
+}) => {
   const [submittedData, setSubmittedData] = useState<
     { sentenceId: string; audioUrl: string }[]
   >([]);
@@ -183,24 +195,24 @@ const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) =
       return;
     }
 
-	const formattedData = await Promise.all(
-	  submittedData.map(async (data) => {
-	    const response = await fetch(data.audioUrl);
-		const blob = await response.blob();
-		const reader = new FileReader();
+    const formattedData = await Promise.all(
+      submittedData.map(async (data) => {
+        const response = await fetch(data.audioUrl);
+        const blob = await response.blob();
+        const reader = new FileReader();
 
-		const base64String = await new Promise<string>((resolve, reject) => {
-		  reader.onloadend = () => resolve(reader.result as string);
-		  reader.onerror = reject;
-		  reader.readAsDataURL(blob);
-		});
+        const base64String = await new Promise<string>((resolve, reject) => {
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
 
-		return {
-		  sentenceId: data.sentenceId,
-		  audioUrl: base64String,
-		};
-	  })
-	);
+        return {
+          sentenceId: data.sentenceId,
+          audioUrl: base64String,
+        };
+      }),
+    );
 
     try {
       const response = await fetch(`${config.backendUrl}/submit-recordings`, {
@@ -229,7 +241,7 @@ const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) =
           onSubmissionUpdate={setSubmittedData}
         />
       </Table>
-	  <Button
+      <Button
         type="submit"
         variant="outline-primary"
         onClick={handleSubmit}
