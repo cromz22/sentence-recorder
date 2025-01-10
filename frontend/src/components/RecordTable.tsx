@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
@@ -223,9 +224,14 @@ const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) =
           onSubmissionUpdate={setSubmittedData}
         />
       </Table>
-      <button onClick={handleSubmit} className="btn btn-primary">
+	  <Button
+        type="submit"
+        variant="outline-primary"
+        onClick={handleSubmit}
+        className="fs-4 fw-bold my-4"
+      >
         Submit All Checked Recordings
-      </button>
+      </Button>
     </div>
   );
 };
