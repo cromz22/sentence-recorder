@@ -1,50 +1,38 @@
-# React + TypeScript + Vite
+# Recorder Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend handles recording, replay, and submission of audio.
+The code is written with [TypeScript](https://www.typescriptlang.org/) + [React](https://react.dev/), with [Vite](https://vite.dev/) as the build tool and [Bun](https://bun.sh/) as the package manager and runtime engine.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Follow the [Bun docs](https://bun.sh/docs/installation) for installing Bun.
 
-## Expanding the ESLint configuration
+- To install dependencies for this project, run:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+    ```
+    bun install
+    ```
 
-- Configure the top-level `parserOptions` property like this:
+## Development
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+- Make sure to start the backend server first.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- To start the development server, run:
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
+    ```
+    bunx --bun vite
+    ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
-```
+    The app starts at [http://localhost:5173](http://localhost:5173) by default.
+
+- For linting, run:
+
+    ```
+    bun run lint
+    ```
+
+- For formatting, run:
+
+    ```
+    bun prettier --write .
+    ```
