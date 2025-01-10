@@ -20,7 +20,7 @@ const Task = () => {
     const fetchSentences = async () => {
       try {
         const response = await fetch(
-          `${config.backendUrl}/read-json/${taskId}`
+          `${config.backendUrl}/read-json/${taskId}`,
         );
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
@@ -61,15 +61,18 @@ const Task = () => {
           sentenceId: data.sentenceId,
           audioUrl: base64String,
         };
-      })
+      }),
     );
 
     try {
-      const response = await fetch(`${config.backendUrl}/submit-recordings/${taskId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formattedData),
-      });
+      const response = await fetch(
+        `${config.backendUrl}/submit-recordings/${taskId}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formattedData),
+        },
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to submit: ${response.statusText}`);

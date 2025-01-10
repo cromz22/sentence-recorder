@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import IconButton from "@mui/material/IconButton";
@@ -85,12 +85,12 @@ const RecordTableRow: React.FC<{
   );
 
   useEffect(() => {
-    if (mediaBlobUrl) {
+    if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {
       setAudioUrl(mediaBlobUrl);
       setIsChecked(true);
       onSelectionChange(sentenceEntity.sentenceId, mediaBlobUrl, true);
     }
-  }, [mediaBlobUrl, onSelectionChange, sentenceEntity.sentenceId]);
+  }, [mediaBlobUrl, audioUrl, onSelectionChange, sentenceEntity.sentenceId]);
 
   return (
     <tr className="fs-4">
@@ -133,9 +133,14 @@ const RecordTableHeader: React.FC = () => (
 
 const RecordTableBody: React.FC<{
   sentences: SentenceEntity[];
-  onSelectionChange: (id: string, audioUrl: string | null, isChecked: boolean) => void;
+  onSelectionChange: (
+    id: string,
+    audioUrl: string | null,
+    isChecked: boolean,
+  ) => void;
 }> = ({ sentences, onSelectionChange }) => {
-  const [isRecordingElsewhere, setIsRecordingElsewhere] = useState<boolean>(false);
+  const [isRecordingElsewhere, setIsRecordingElsewhere] =
+    useState<boolean>(false);
 
   return (
     <tbody>
@@ -160,16 +165,19 @@ const RecordTable: React.FC<{
     { sentenceId: string; audioUrl: string; isChecked: boolean }[]
   >([]);
 
-  const handleSelectionChange = (id: string, audioUrl: string | null, isChecked: boolean) => {
-    setRecordedData((prev) =>
-      audioUrl
-        ? [
-            ...prev.filter((item) => item.sentenceId !== id),
-            { sentenceId: id, audioUrl, isChecked },
-          ]
-        : prev.filter((item) => item.sentenceId !== id)
-    );
-  };
+  const handleSelectionChange = useCallback(
+    (id: string, audioUrl: string | null, isChecked: boolean) => {
+      setRecordedData((prev) =>
+        audioUrl
+          ? [
+              ...prev.filter((item) => item.sentenceId !== id),
+              { sentenceId: id, audioUrl, isChecked },
+            ]
+          : prev.filter((item) => item.sentenceId !== id),
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
     // Filter and send only checked recordings
