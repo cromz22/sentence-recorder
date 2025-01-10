@@ -5,11 +5,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pathlib import Path
 
+
 app = FastAPI()
 
 with open("app/config.json") as f:
     origins = json.load(f)["origins"]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,9 +27,9 @@ async def read_root() -> dict:
 
 @app.get("/read-json/{json_stem}")
 def read_json(json_stem: str):
-    data_dir = Path("data")
+    json_dir = Path("data/json")
     try:
-        json_file = data_dir / f"{json_stem}.json"
+        json_file = json_dir / f"{json_stem}.json"
         with open(json_file, "r", encoding="utf-8") as f:
             content = json.load(f)
 
