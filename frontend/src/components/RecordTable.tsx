@@ -178,6 +178,11 @@ const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) =
   >([]);
 
   const handleSubmit = async () => {
+    if (submittedData.length === 0) {
+      alert("Please select at least one recording before submitting.");
+      return;
+    }
+
 	const formattedData = await Promise.all(
 	  submittedData.map(async (data) => {
 	    const response = await fetch(data.audioUrl);
