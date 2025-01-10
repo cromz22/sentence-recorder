@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import { useReactMediaRecorder } from "../utils/ReactMediaRecorder";
 import { SentenceEntity } from "./types";
-import config from "../config.json";
 
 const StartStopButton: React.FC<{
   status: string;
@@ -25,7 +23,7 @@ const StartStopButton: React.FC<{
   useEffect(() => {
     if (status === "recording") setIsRecordingElsewhere(true);
     if (status === "stopped") setIsRecordingElsewhere(false);
-  }, [status]);
+  }, [status, setIsRecordingElsewhere]);
 
   return (
     <IconButton
@@ -92,7 +90,7 @@ const RecordTableRow: React.FC<{
       setIsChecked(true);
       onSelectionChange(sentenceEntity.sentenceId, mediaBlobUrl, true);
     }
-  }, [mediaBlobUrl]);
+  }, [mediaBlobUrl, onSelectionChange, sentenceEntity.sentenceId]);
 
   return (
     <tr className="fs-4">
@@ -176,7 +174,7 @@ const RecordTable: React.FC<{
   useEffect(() => {
     // Filter and send only checked recordings
     onSelectionUpdate(recordedData.filter((data) => data.isChecked));
-  }, [recordedData]);
+  }, [recordedData, onSelectionUpdate]);
 
   return (
     <Table>

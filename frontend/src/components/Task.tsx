@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 import TaskDescription from "./TaskDescription";
 import RecordTable from "./RecordTable";
 import { SentenceEntity } from "./types";
 import config from "../config.json";
-import Button from "react-bootstrap/Button";
 
 const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
@@ -27,8 +27,8 @@ const Task = () => {
         }
         const sentences: SentenceEntity[] = await response.json();
         setSentences(sentences);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (error) {
+        setError(error.message);
       }
     };
     fetchSentences();
