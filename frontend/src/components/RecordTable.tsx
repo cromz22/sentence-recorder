@@ -68,7 +68,7 @@ const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
   isRecordingElsewhere: boolean;
   setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectionChange: (id: number, audioUrl: string | null, isChecked: boolean) => void;
+  onSelectionChange: (id: string, audioUrl: string | null, isChecked: boolean) => void;
 }> = ({
   sentenceEntity,
   isRecordingElsewhere,
@@ -131,15 +131,15 @@ const RecordTableHeader: React.FC = () => (
 
 const RecordTableBody: React.FC<{
   sentences: SentenceEntity[];
-  onSubmissionUpdate: (data: { sentenceId: number; audioUrl: string }[]) => void;
+  onSubmissionUpdate: (data: { sentenceId: string; audioUrl: string }[]) => void;
 }> = ({ sentences, onSubmissionUpdate }) => {
   const [isRecordingElsewhere, setIsRecordingElsewhere] =
     useState<boolean>(false);
   const [recordedData, setRecordedData] = useState<
-    { sentenceId: number; audioUrl: string; isChecked: boolean }[]
+    { sentenceId: string; audioUrl: string; isChecked: boolean }[]
   >([]);
 
-  const handleSelectionChange = (id: number, audioUrl: string | null, isChecked: boolean) => {
+  const handleSelectionChange = (id: string, audioUrl: string | null, isChecked: boolean) => {
     setRecordedData((prev) =>
       audioUrl
         ? [
@@ -174,7 +174,7 @@ const RecordTableBody: React.FC<{
 
 const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({ sentences }) => {
   const [submittedData, setSubmittedData] = useState<
-    { sentenceId: number; audioUrl: string }[]
+    { sentenceId: string; audioUrl: string }[]
   >([]);
 
   const handleSubmit = async () => {
