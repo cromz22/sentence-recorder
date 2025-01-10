@@ -1,8 +1,7 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import json
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+import json
 from pathlib import Path
 from pydantic import BaseModel
 import base64
@@ -40,7 +39,9 @@ def read_json(task_id: str):
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON format: {task_id}.json.")
+        raise HTTPException(
+            status_code=400, detail=f"Invalid JSON format: {task_id}.json."
+        )
 
 
 class Recording(BaseModel):
@@ -55,7 +56,7 @@ async def submit_recordings(recordings: list[Recording], task_id: str):
 
     if not recordings:
         raise HTTPException(status_code=400, detail="No recordings provided.")
-    
+
     try:
         for recording in recordings:
             with open(audio_dir / f"{recording.sentenceId}.webm", "wb") as f:
