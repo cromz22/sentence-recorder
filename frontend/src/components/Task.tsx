@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import TaskDescription from "./TaskDescription";
@@ -15,6 +15,7 @@ const Task = () => {
   const [selectedRecordings, setSelectedRecordings] = useState<
     { sentenceId: string; audioUrl: string }[]
   >([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSentences = async () => {
@@ -78,7 +79,7 @@ const Task = () => {
         throw new Error(`Failed to submit: ${response.statusText}`);
       }
 
-      alert("Submission successful!");
+      navigate("/finished");
     } catch (error) {
       console.error("Error during submission:", error);
       alert("Failed to submit recordings.");
