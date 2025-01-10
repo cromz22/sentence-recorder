@@ -135,35 +135,9 @@ const RecordTableHeader: React.FC = () => (
 
 const RecordTableBody: React.FC<{
   sentences: SentenceEntity[];
-  onSubmissionUpdate: (
-    data: { sentenceId: string; audioUrl: string }[],
-  ) => void;
-}> = ({ sentences, onSubmissionUpdate }) => {
-  const [isRecordingElsewhere, setIsRecordingElsewhere] =
-    useState<boolean>(false);
-  const [recordedData, setRecordedData] = useState<
-    { sentenceId: string; audioUrl: string; isChecked: boolean }[]
-  >([]);
-
-  const handleSelectionChange = (
-    id: string,
-    audioUrl: string | null,
-    isChecked: boolean,
-  ) => {
-    setRecordedData((prev) =>
-      audioUrl
-        ? [
-            ...prev.filter((item) => item.sentenceId !== id),
-            { sentenceId: id, audioUrl, isChecked },
-          ]
-        : prev.filter((item) => item.sentenceId !== id),
-    );
-  };
-
-  useEffect(() => {
-    // Filter and send only checked recordings
-    onSubmissionUpdate(recordedData.filter((data) => data.isChecked));
-  }, [recordedData]);
+  onSelectionChange: (id: string, audioUrl: string | null, isChecked: boolean) => void;
+}> = ({ sentences, onSelectionChange }) => {
+  const [isRecordingElsewhere, setIsRecordingElsewhere] = useState<boolean>(false);
 
   return (
     <tbody>
@@ -173,83 +147,45 @@ const RecordTableBody: React.FC<{
           sentenceEntity={sentenceEntity}
           isRecordingElsewhere={isRecordingElsewhere}
           setIsRecordingElsewhere={setIsRecordingElsewhere}
-          onSelectionChange={(id, audioUrl, isChecked) =>
-            handleSelectionChange(id, audioUrl, isChecked)
-          }
+          onSelectionChange={onSelectionChange}
         />
       ))}
     </tbody>
   );
 };
 
-const RecordTable: React.FC<{ sentences: SentenceEntity[] }> = ({
-  sentences,
-}) => {
-  const [submittedData, setSubmittedData] = useState<
-    { sentenceId: string; audioUrl: string }[]
+const RecordTable: React.FC<{
+  sentences: SentenceEntity[];
+  onSelectionUpdate: (data: { sentenceId: string; audioUrl: string }[]) => void;
+}> = ({ sentences, onSelectionUpdate }) => {
+  const [recordedData, setRecordedData] = useState<
+    { sentenceId: string; audioUrl: string; isChecked: boolean }[]
   >([]);
 
-  const handleSubmit = async () => {
-    if (submittedData.length === 0) {
-      alert("Please select at least one recording before submitting.");
-      return;
-    }
-
-    const formattedData = await Promise.all(
-      submittedData.map(async (data) => {
-        const response = await fetch(data.audioUrl);
-        const blob = await response.blob();
-        const reader = new FileReader();
-
-        const base64String = await new Promise<string>((resolve, reject) => {
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-
-        return {
-          sentenceId: data.sentenceId,
-          audioUrl: base64String,
-        };
-      }),
+  const handleSelectionChange = (id: string, audioUrl: string | null, isChecked: boolean) => {
+    setRecordedData((prev) =>
+      audioUrl
+        ? [
+            ...prev.filter((item) => item.sentenceId !== id),
+            { sentenceId: id, audioUrl, isChecked },
+          ]
+        : prev.filter((item) => item.sentenceId !== id)
     );
-
-    try {
-      const response = await fetch(`${config.backendUrl}/submit-recordings`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formattedData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to submit: ${response.statusText}`);
-      }
-
-      alert("Submission successful!");
-    } catch (error) {
-      console.error("Error during submission:", error);
-      alert("Failed to submit recordings.");
-    }
   };
 
+  useEffect(() => {
+    // Filter and send only checked recordings
+    onSelectionUpdate(recordedData.filter((data) => data.isChecked));
+  }, [recordedData]);
+
   return (
-    <div>
-      <Table>
-        <RecordTableHeader />
-        <RecordTableBody
-          sentences={sentences}
-          onSubmissionUpdate={setSubmittedData}
-        />
-      </Table>
-      <Button
-        type="submit"
-        variant="outline-primary"
-        onClick={handleSubmit}
-        className="fs-4 fw-bold my-4"
-      >
-        Submit All Checked Recordings
-      </Button>
-    </div>
+    <Table>
+      <RecordTableHeader />
+      <RecordTableBody
+        sentences={sentences}
+        onSelectionChange={handleSelectionChange}
+      />
+    </Table>
   );
 };
 
