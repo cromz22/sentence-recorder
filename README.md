@@ -17,6 +17,6 @@ Json files that contain the sentences should be placed at `backend/data/json/{ta
 ]
 ```
 
-Users can access the web app at `{frontend_url}/task/{task_id}` (e.g., https://localhost:5173/task/sample1), where they can record the audio sentence by sentence, check the audio, and submit the audio of their choosing.
+Users can access the web app at `{frontend_url}/task/{task_id}` (e.g., http://localhost:5173/task/sample1), where they can record the audio sentence by sentence, check the audio, and submit the audio of their choosing.
 
 The submitted audio will be saved as `backend/data/audio/{task_id}/{sentenceId}.webm` in the [Opus](https://opus-codec.org/) format.
