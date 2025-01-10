@@ -1,0 +1,32 @@
+tbody > tr:hover {
+  background-color: #f0f8ff;
+}
+
+tbody > tr {
+  height: 4em;
+}
+
+.table > tbody > tr > td,
+.table > thead > tr > td {
+  vertical-align: middle;
+}
+
+.table > tbody > tr > td:first-child {
+  width: 50%;
+}
+
+.table > tbody > tr > td:nth-child(2) {
+  width: 20%;
+}
+
+.table > tbody > tr > td:nth-child(3) {
+  width: 10%;
+}
+
+.table > tbody > tr > td:nth-child(4) {
+  width: 20%;
+}
+
+.micstop {
+  transform: scale(1.5);
+}

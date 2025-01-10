@@ -6,6 +6,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import { useReactMediaRecorder } from "../utils/ReactMediaRecorder";
 import { SentenceEntity } from "./types";
+import "./RecordTable.css";
 
 const StartStopButton: React.FC<{
   status: string;
@@ -31,11 +32,11 @@ const StartStopButton: React.FC<{
       disabled={isRecordingElsewhere && status !== "recording"}
     >
       {isRecordingElsewhere && status !== "recording" ? (
-        <MicIcon color="disabled" />
+        <MicIcon color="disabled" className="micstop" />
       ) : status === "recording" ? (
-        <StopIcon color="error" />
+        <StopIcon color="error" className="micstop" />
       ) : (
-        <MicIcon color="primary" />
+        <MicIcon color="primary" className="micstop" />
       )}
     </IconButton>
   );
@@ -185,7 +186,7 @@ const RecordTable: React.FC<{
   }, [recordedData, onSelectionUpdate]);
 
   return (
-    <Table>
+    <Table hover>
       <RecordTableHeader />
       <RecordTableBody
         sentences={sentences}
