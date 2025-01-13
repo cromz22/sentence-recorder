@@ -58,10 +58,16 @@ const Task = () => {
       }
       if (
         !sentence.audioUrl &&
-        (sentence.isCodeSwitched || sentence.isAccurateTranslation)
+        sentence.isCodeSwitched &&
+        sentence.isAccurateTranslation
       ) {
         errors.push(
           `Sentence No. ${sentenceNo}: Audio recording is missing for checked sentences.`,
+        );
+      }
+      if (sentence.isAccurateTranslation && !sentence.isCodeSwitched) {
+        errors.push(
+          `Sentence No. ${sentenceNo}: Whether the translation is accurate or not should only be evaluated if the sentence is a code-switched one.`,
         );
       }
     });
