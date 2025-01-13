@@ -68,7 +68,7 @@ const RecordTableRow: React.FC<{
     audioUrl: string | null,
     isCodeSwitched: boolean,
     isAccurateTranslation: boolean,
-	fluency: number,
+    fluency: number,
   ) => void;
 }> = ({
   sentenceEntity,
@@ -96,20 +96,20 @@ const RecordTableRow: React.FC<{
       audioUrl,
       isCodeSwitched,
       isAccurateTranslation,
-	  fluency,
+      fluency,
     );
   }, [
     audioUrl,
     isCodeSwitched,
     isAccurateTranslation,
-	fluency,
+    fluency,
     onSelectionChange,
     sentenceEntity.sentenceId,
   ]);
 
   const handleButtonClick = (fluency: number) => {
     setFluency(fluency);
-  }
+  };
 
   return (
     <tr className="fs-4">
@@ -169,7 +169,7 @@ const RecordTableHeader: React.FC = () => (
       <td>Accurate translation</td>
       <td>Record / Stop</td>
       <td>Check the audio</td>
-	  <td>Fluency</td>
+      <td>Fluency</td>
     </tr>
   </thead>
 );
