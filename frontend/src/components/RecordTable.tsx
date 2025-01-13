@@ -70,7 +70,7 @@ const RecordTableRow: React.FC<{
   onSelectionChange: (
     id: string,
     audioUrl: string | null,
-    isChecked: boolean,
+    isCodeSwitched: boolean,
   ) => void;
 }> = ({
   sentenceEntity,
@@ -81,23 +81,25 @@ const RecordTableRow: React.FC<{
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isChecked, setIsChecked] = useState<boolean>(
-    !!sentenceEntity.isSelected,
-  );
+  const [isCodeSwitched, setIsCodeSwitched] = useState<boolean>(true);
 
   useEffect(() => {
     if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {
       setAudioUrl(mediaBlobUrl);
-      setIsChecked(true);
-      onSelectionChange(sentenceEntity.sentenceId, mediaBlobUrl, true);
     }
-  }, [mediaBlobUrl, audioUrl, onSelectionChange, sentenceEntity.sentenceId]);
+  }, [mediaBlobUrl, audioUrl, isCodeSwitched, onSelectionChange, sentenceEntity.sentenceId]);
 
   return (
     <tr className="fs-4">
       <td>
         <div>{sentenceEntity.codeSwitchedSentence}</div>
         <div>({sentenceEntity.reference})</div>
+      </td>
+      <td>
+        <RecordCheckbox
+          isChecked={isCodeSwitched}
+		  onChange={setIsCodeSwitched}
+        />
       </td>
       <td>
         <StartStopButton
@@ -111,15 +113,6 @@ const RecordTableRow: React.FC<{
       <td>
         <audio src={audioUrl || "#"} controls />
       </td>
-      <td>
-        <RecordCheckbox
-          isChecked={isChecked}
-          onChange={(checked) => {
-            setIsChecked(checked);
-            onSelectionChange(sentenceEntity.sentenceId, audioUrl, checked);
-          }}
-        />
-      </td>
     </tr>
   );
 };
@@ -131,9 +124,9 @@ const RecordTableHeader: React.FC = () => (
         <div>Sentence to be recorded</div>
         <div>(Monolingual reference)</div>
       </td>
+      <td>Code-switched</td>
       <td>Record / Stop</td>
       <td>Check the audio</td>
-      <td>Submit the audio</td>
     </tr>
   </thead>
 );
@@ -169,16 +162,16 @@ const RecordTable: React.FC<{
   onSelectionUpdate: (data: { sentenceId: string; audioUrl: string }[]) => void;
 }> = ({ sentences, onSelectionUpdate }) => {
   const [recordedData, setRecordedData] = useState<
-    { sentenceId: string; audioUrl: string; isChecked: boolean }[]
+    { sentenceId: string; audioUrl: string; isCodeSwitched: boolean }[]
   >([]);
 
   const handleSelectionChange = useCallback(
-    (id: string, audioUrl: string | null, isChecked: boolean) => {
+    (id: string, audioUrl: string | null, isCodeSwitched: boolean) => {
       setRecordedData((prev) =>
         audioUrl
           ? [
               ...prev.filter((item) => item.sentenceId !== id),
-              { sentenceId: id, audioUrl, isChecked },
+              { sentenceId: id, audioUrl, isCodeSwitched },
             ]
           : prev.filter((item) => item.sentenceId !== id),
       );
@@ -188,7 +181,7 @@ const RecordTable: React.FC<{
 
   useEffect(() => {
     // Filter and send only checked recordings
-    onSelectionUpdate(recordedData.filter((data) => data.isChecked));
+    onSelectionUpdate(recordedData.filter((data) => data.isCodeSwitched));
   }, [recordedData, onSelectionUpdate]);
 
   return (
