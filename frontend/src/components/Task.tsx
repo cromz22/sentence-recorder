@@ -158,7 +158,7 @@ const Task = () => {
           onClick={handleSubmit}
           className="fs-4 fw-bold my-5"
         >
-          Submit All Checked Recordings
+          Submit All Recordings & Metadata
         </Button>
 
         <ConfirmationModal
