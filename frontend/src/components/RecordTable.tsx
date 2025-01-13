@@ -45,7 +45,6 @@ const StartStopButton: React.FC<{
 const RecordCheckbox: React.FC<{
   isChecked: boolean;
   onChange: (checked: boolean) => void;
-  label: string;
 }> = ({ isChecked, onChange, label }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.checked);
@@ -55,7 +54,6 @@ const RecordCheckbox: React.FC<{
     <Form>
       <Form.Check
         type="checkbox"
-        label={label}
         checked={isChecked}
         onChange={handleChange}
       />
@@ -89,7 +87,22 @@ const RecordTableRow: React.FC<{
     if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {
       setAudioUrl(mediaBlobUrl);
     }
-  }, [mediaBlobUrl, audioUrl, isCodeSwitched, isAccurateTranslation, onSelectionChange, sentenceEntity.sentenceId]);
+  }, [mediaBlobUrl, audioUrl]);
+
+  useEffect(() => {
+    onSelectionChange(
+      sentenceEntity.sentenceId,
+      audioUrl,
+      isCodeSwitched,
+      isAccurateTranslation
+    );
+  }, [
+    audioUrl,
+    isCodeSwitched,
+    isAccurateTranslation,
+    onSelectionChange,
+    sentenceEntity.sentenceId,
+  ]);
 
   return (
     <tr className="fs-4">
@@ -145,7 +158,8 @@ const RecordTableBody: React.FC<{
   onSelectionChange: (
     id: string,
     audioUrl: string | null,
-    isChecked: boolean,
+    isCodeSwitched: boolean,
+	isAccurateTranslation: boolean,
   ) => void;
 }> = ({ sentences, onSelectionChange }) => {
   const [isRecordingElsewhere, setIsRecordingElsewhere] =
@@ -168,7 +182,7 @@ const RecordTableBody: React.FC<{
 
 const RecordTable: React.FC<{
   sentences: SentenceEntity[];
-  onSelectionUpdate: (data: { sentenceId: string; audioUrl: string }[]) => void;
+  onSelectionUpdate: (data: { sentenceId: string; audioUrl: string, isCodeSwitched: boolean, isAccurateTranslation: boolean }[]) => void;
 }> = ({ sentences, onSelectionUpdate }) => {
   const [recordedData, setRecordedData] = useState<
     { sentenceId: string; audioUrl: string; isCodeSwitched: boolean, isAccurateTranslation: boolean }[]
@@ -189,9 +203,13 @@ const RecordTable: React.FC<{
   );
 
   useEffect(() => {
-    // Filter and send only checked recordings
-    onSelectionUpdate(recordedData.filter((data) => data.isCodeSwitched && isAccurateTranslation));
+  onSelectionUpdate(
+    recordedData.filter(
+      (data) => data.isCodeSwitched && data.isAccurateTranslation
+    )
+  );
   }, [recordedData, onSelectionUpdate]);
+
 
   return (
     <Table hover>
