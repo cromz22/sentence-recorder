@@ -76,9 +76,9 @@ const RecordTableRow: React.FC<{
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isCodeSwitched, setIsCodeSwitched] = useState<boolean>(true);
+  const [isCodeSwitched, setIsCodeSwitched] = useState<boolean>(false);
   const [isAccurateTranslation, setIsAccurateTranslation] =
-    useState<boolean>(true);
+    useState<boolean>(false);
 
   useEffect(() => {
     if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {

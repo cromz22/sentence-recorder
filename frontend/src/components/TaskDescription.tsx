@@ -21,17 +21,23 @@ const TaskDescription: React.FC<TaskDescriptionProps> = () => {
         <Card.Body>
           <ol className="text-start fs-5">
             <li>
-              Verify that the sentence is indeed code-switched. If not, unmark
-              the "Code-switched" checkbox and move on to the next sentence.
+              Verify that the sentence is indeed code-switched, and mark the "
+              <span className="fw-bold">Code-switched</span>" checkbox. If not,
+              leave it unmarked and move on to the next sentence.
             </li>
             <li>
               Verify that the sentence has the same general meaning as the
-              monolingual reference. If not, unmark the "Accurate translation"
-              checkbox and move on to the next sentence.
+              monolingual reference, and mark the "
+              <span className="fw-bold">Accurate translation</span>" checkbox.
+              If not, leave it unmarked and move on to the next sentence.
             </li>
-            <li>Record yourself reading the "Sentence to be recorded."</li>
             <li>
-              Rate the "Fluency" of the sentence:
+              Record yourself reading the "
+              <span className="fw-bold">Sentence to be recorded</span>."
+            </li>
+            <li>
+              Rate the "<span className="fw-bold">Fluency</span>" of the
+              sentence:
               <ol start="0">
                 <li>Unnatural</li>
                 <li>Not perfectly natural, but might be produced by people</li>
