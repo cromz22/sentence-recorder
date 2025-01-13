@@ -44,22 +44,33 @@ const Task = () => {
   }, [taskId]);
 
   const validateRecordings = (sentences: SentenceEntity[]) => {
-    for (const sentence of sentences) {
+    const errors: string[] = [];
+
+    sentences.forEach((sentence, index) => {
+      const sentenceNo = index + 1;
       if (
         sentence.audioUrl &&
         (!sentence.isCodeSwitched || !sentence.isAccurateTranslation)
       ) {
-        setValidationError("All recordings must have both checkboxes checked.");
-        return false;
+        errors.push(
+          `Sentence No. ${sentenceNo}: All recordings must have both checkboxes checked.`,
+        );
       }
       if (
         !sentence.audioUrl &&
         (sentence.isCodeSwitched || sentence.isAccurateTranslation)
       ) {
-        setValidationError("Audio recording is missing for checked sentences.");
-        return false;
+        errors.push(
+          `Sentence No. ${sentenceNo}: Audio recording is missing for checked sentences.`,
+        );
       }
+    });
+
+    if (errors.length > 0) {
+      setValidationError(errors.join(" "));
+      return false;
     }
+
     setValidationError(null);
     return true;
   };
