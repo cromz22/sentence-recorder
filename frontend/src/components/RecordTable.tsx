@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Button from "react-bootstrap/Button";
 import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
@@ -66,6 +68,7 @@ const RecordTableRow: React.FC<{
     audioUrl: string | null,
     isCodeSwitched: boolean,
     isAccurateTranslation: boolean,
+	fluency: number,
   ) => void;
 }> = ({
   sentenceEntity,
@@ -79,6 +82,7 @@ const RecordTableRow: React.FC<{
   const [isCodeSwitched, setIsCodeSwitched] = useState<boolean>(false);
   const [isAccurateTranslation, setIsAccurateTranslation] =
     useState<boolean>(false);
+  const [fluency, setFluency] = useState<number>(0);
 
   useEffect(() => {
     if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {
@@ -92,14 +96,20 @@ const RecordTableRow: React.FC<{
       audioUrl,
       isCodeSwitched,
       isAccurateTranslation,
+	  fluency,
     );
   }, [
     audioUrl,
     isCodeSwitched,
     isAccurateTranslation,
+	fluency,
     onSelectionChange,
     sentenceEntity.sentenceId,
   ]);
+
+  const handleButtonClick = (fluency: number) => {
+    setFluency(fluency);
+  }
 
   return (
     <tr className="fs-4">
@@ -131,6 +141,19 @@ const RecordTableRow: React.FC<{
       <td>
         <audio src={audioUrl || "#"} controls />
       </td>
+      <td>
+        <ButtonGroup>
+          {[0, 1, 2].map((value) => (
+            <Button
+              key={value}
+              variant={fluency === value ? "primary" : "outline-primary"}
+              onClick={() => handleButtonClick(value)}
+            >
+              {value}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </td>
     </tr>
   );
 };
@@ -146,6 +169,7 @@ const RecordTableHeader: React.FC = () => (
       <td>Accurate translation</td>
       <td>Record / Stop</td>
       <td>Check the audio</td>
+	  <td>Fluency</td>
     </tr>
   </thead>
 );

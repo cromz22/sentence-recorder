@@ -12,7 +12,7 @@ tbody > tr {
 }
 
 .table > tbody > tr > td:first-child {
-  width: 50%;
+  width: 40%;
 }
 
 .table > tbody > tr > td:nth-child(2) {
@@ -29,6 +29,10 @@ tbody > tr {
 
 .table > tbody > tr > td:nth-child(5) {
   width: 20%;
+}
+
+.table > tbody > tr > td:nth-child(6) {
+  width: 10%;
 }
 
 .micstop {
