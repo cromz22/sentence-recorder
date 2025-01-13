@@ -1,4 +1,4 @@
-# Sentence Recorder
+# Sentence Recorder for Code-switched Sentences
 
 This is a tool to collect read audio given sentences to record.
 
@@ -8,11 +8,13 @@ Json files that contain the sentences should be placed at `backend/data/json/{ta
 [
     {
         "sentenceId": "sample1_sentence1",
-        "sentence": "This is sample sentence 1 from sample1.json."
+        "codeSwitchedSentence": "This is sample 文 1 from sample1.json.",
+        "reference": "This is sample sentence 1 from sample1.json."
     },
     {
         "sentenceId": "sample1_sentence2",
-        "sentence": "This is sample sentence 2 from sample1.json."
+        "codeSwitchedSentence": "This is sample 文 2 from sample1.json.",
+        "reference": "This is sample sentence 2 from sample1.json."
     }
 ]
 ```
