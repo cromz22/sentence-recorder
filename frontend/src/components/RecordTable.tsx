@@ -95,7 +95,10 @@ const RecordTableRow: React.FC<{
 
   return (
     <tr className="fs-4">
-      <td>{sentenceEntity.sentence}</td>
+      <td>
+        <div>{sentenceEntity.codeSwitchedSentence}</div>
+        <div>({sentenceEntity.reference})</div>
+      </td>
       <td>
         <StartStopButton
           status={status}
@@ -124,7 +127,10 @@ const RecordTableRow: React.FC<{
 const RecordTableHeader: React.FC = () => (
   <thead>
     <tr className="fw-bold fs-5">
-      <td>Sentences to record</td>
+      <td>
+        <div>Sentence to be recorded</div>
+        <div>(Monolingual reference)</div>
+      </td>
       <td>Record / Stop</td>
       <td>Check the audio</td>
       <td>Submit the audio</td>

@@ -1,5 +1,6 @@
 export interface SentenceEntity {
   sentenceId: string;
-  sentence: string;
+  codeSwitchedSentence: string;
+  reference: string;
   willSubmit: boolean;
 }

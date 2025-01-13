@@ -30,3 +30,13 @@ tbody > tr {
 .micstop {
   transform: scale(1.5);
 }
+
+.table > thead > tr > td:first-child > div:nth-child(2) {
+  color: gray;
+  font-size: 0.9em;
+}
+
+.table > tbody > tr > td:first-child > div:nth-child(2) {
+  color: gray;
+  font-size: 0.9em;
+}

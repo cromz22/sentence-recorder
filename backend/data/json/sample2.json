@@ -1,10 +1,12 @@
 [
     {
         "sentenceId": "sample2_sentence1",
-        "sentence": "This is sample sentence 1 from sample2.json."
+        "codeSwitchedSentence": "This is sample 文 1 from sample2.json.",
+        "reference": "This is sample sentence 1 from sample2.json."
     },
     {
         "sentenceId": "sample2_sentence2",
-        "sentence": "This is sample sentence 2 from sample2.json."
+        "codeSwitchedSentence": "This is sample 文 2 from sample2.json.",
+        "reference": "This is sample sentence 2 from sample2.json."
     }
 ]
