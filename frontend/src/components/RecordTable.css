@@ -35,6 +35,10 @@ tbody > tr {
   width: 10%;
 }
 
+.table > tbody > tr > td > audio {
+  vertical-align: middle;
+}
+
 .micstop {
   transform: scale(1.5);
 }
