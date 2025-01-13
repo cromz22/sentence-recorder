@@ -12,12 +12,10 @@ import config from "../config.json";
 const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [sentences, setSentences] = useState<SentenceEntity[] | null>(null);
-  const [originalSentences, setOriginalSentences] = useState<
-    SentenceEntity[] | null
-  >(null);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [unchangedRows, setUnchangedRows] = useState<number[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +36,6 @@ const Task = () => {
           fluency: 0,
         }));
         setSentences(initializedSentences);
-        setOriginalSentences(initializedSentences);
       } catch (error) {
         setError(error.message);
       }
@@ -73,16 +70,25 @@ const Task = () => {
       return;
     }
 
-    // Check if any changes were made
-    const hasChanges =
-      JSON.stringify(sentences) !== JSON.stringify(originalSentences);
+    // Identify unchanged rows
+    const unchanged = sentences
+      .map((sentence, index) =>
+        !sentence.audioUrl &&
+        !sentence.isCodeSwitched &&
+        !sentence.isAccurateTranslation &&
+        sentence.fluency === 0
+          ? index + 1
+          : null,
+      )
+      .filter((row) => row !== null) as number[];
 
-    if (!hasChanges) {
-      setShowConfirmation(true); // Show modal if no changes
+    if (unchanged.length > 0) {
+      setUnchangedRows(unchanged);
+      setShowConfirmation(true);
       return;
     }
 
-    await proceedWithSubmission(); // Directly proceed if changes are made
+    await proceedWithSubmission();
   };
 
   const proceedWithSubmission = async () => {
@@ -168,8 +174,10 @@ const Task = () => {
             setShowConfirmation(false);
             proceedWithSubmission();
           }}
-          message="You haven't made any changes to the data. Do you still want to submit?"
-          title="No Changes Detected"
+          message={`The following rows have no changes: No. ${unchangedRows.join(
+            ", ",
+          )}. Do you still want to submit?`}
+          title="Unchanged Rows Detected"
         />
       </Container>
     </div>

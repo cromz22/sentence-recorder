@@ -12,27 +12,31 @@ tbody > tr {
 }
 
 .table > tbody > tr > td:first-child {
-  width: 40%;
+  width: 5%;
 }
 
 .table > tbody > tr > td:nth-child(2) {
-  width: 10%;
+  width: 40%;
 }
 
 .table > tbody > tr > td:nth-child(3) {
-  width: 10%;
+  width: 5%;
 }
 
 .table > tbody > tr > td:nth-child(4) {
-  width: 10%;
+  width: 5%;
 }
 
 .table > tbody > tr > td:nth-child(5) {
+  width: 10%;
+}
+
+.table > tbody > tr > td:nth-child(6) {
   width: 20%;
 }
 
 .table > tbody > tr > td:nth-child(6) {
-  width: 10%;
+  width: 15%;
 }
 
 .table > tbody > tr > td > audio {
@@ -43,8 +47,8 @@ tbody > tr {
   transform: scale(1.5);
 }
 
-.table > thead > tr > td:first-child > div:nth-child(2),
-.table > tbody > tr > td:first-child > div:nth-child(2) {
+.table > thead > tr > td:nth-child(2) > div:nth-child(2),
+.table > tbody > tr > td:nth-child(2) > div:nth-child(2) {
   color: gray;
   font-size: 0.9em;
 }

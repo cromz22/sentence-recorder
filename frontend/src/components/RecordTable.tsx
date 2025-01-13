@@ -60,11 +60,13 @@ const RecordCheckbox: React.FC<{
 };
 
 const RecordTableRow: React.FC<{
+  rowNumber: number;
   sentenceEntity: SentenceEntity;
   isRecordingElsewhere: boolean;
   setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
   updateSentenceEntity: (updatedEntity: SentenceEntity) => void;
 }> = ({
+  rowNumber,
   sentenceEntity,
   isRecordingElsewhere,
   setIsRecordingElsewhere,
@@ -82,6 +84,7 @@ const RecordTableRow: React.FC<{
 
   return (
     <tr className="fs-4">
+      <td>{rowNumber}</td>
       <td>
         <div>{sentenceEntity.codeSwitchedSentence}</div>
         <div>({sentenceEntity.reference})</div>
@@ -144,6 +147,7 @@ const RecordTableRow: React.FC<{
 const RecordTableHeader: React.FC = () => (
   <thead>
     <tr className="fw-bold fs-5">
+      <td>No.</td>
       <td>
         <div>Sentence to be recorded</div>
         <div>(Monolingual reference)</div>
@@ -170,9 +174,10 @@ const RecordTableBody: React.FC<{
 }) => {
   return (
     <tbody>
-      {sentences.map((sentenceEntity) => (
+      {sentences.map((sentenceEntity, index) => (
         <RecordTableRow
           key={sentenceEntity.sentenceId}
+          rowNumber={index + 1}
           sentenceEntity={sentenceEntity}
           isRecordingElsewhere={isRecordingElsewhere}
           setIsRecordingElsewhere={setIsRecordingElsewhere}
