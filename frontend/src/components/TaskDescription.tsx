@@ -49,33 +49,28 @@ const TaskDescription: React.FC<TaskDescriptionProps> = ({ setAgreed }) => {
         border="secondary"
         className="mx-auto my-5"
       >
-        <Card.Header as="h5">Notes</Card.Header>
-        <div className="mx-auto my-3 px-2 fs-5">
-          <ul className="text-start">
+        <Card.Header as="h5">Instructions</Card.Header>
+        <Card.Body>
+          <ol className="text-start fs-5">
             <li>
-              Please record in a <span className="text-danger">quiet</span>{" "}
-              environment.
+			  Verify that the sentence is indeed code-switched. If not, unmark the "Code-switched" checkbox and move on to the next sentence.
             </li>
             <li>
-              Please speak as <span className="text-danger">clearly</span> as
-              possible. If you make a mistake, you can rerecord.
+		      Verify that the sentence has the same general meaning as the monolingual reference. If not, unmark the "Accurate translation" checkbox and move on to the next sentence.
             </li>
             <li>
-              Please use a <span className="text-danger">microphone</span> if
-              possible.
+		      Record yourself reading the "Sentence to be recorded."
             </li>
             <li>
-              Please make sure that the audio is{" "}
-              <span className="text-danger">actually recorded</span> before
-              submission.
+			  Rate the "Fluency" of the sentence:
+			  <ol start="0">
+			    <li>Unnatural</li>
+				<li>Not perfectly natural, but might be produced by people</li>
+			    <li>Perfectly natural</li>
+			  </ol>
             </li>
-            <li>
-              Please note that the recorded voice will be released as a dataset
-              in the future.
-            </li>
-          </ul>
-          <AgreeCheckbox setAgreed={setAgreed} agreeLabel={agreeLabel} />
-        </div>
+          </ol>
+        </Card.Body>
       </Card>
     </Container>
   );
