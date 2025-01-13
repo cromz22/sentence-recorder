@@ -74,7 +74,7 @@ const Task = () => {
       return;
     }
 
-    const unchanged = sentences
+    const unchangedRows = sentences
       .map((sentence, index) =>
         !sentence.audioUrl &&
         !sentence.isCodeSwitched &&
@@ -85,8 +85,8 @@ const Task = () => {
       )
       .filter((row) => row !== null) as number[];
 
-    if (unchanged.length > 0) {
-      setUnchangedRows(unchanged);
+    if (unchangedRows.length > 0) {
+      setUnchangedRows(unchangedRows);
       setShowConfirmation(true);
       return;
     }
