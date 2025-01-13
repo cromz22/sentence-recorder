@@ -36,8 +36,8 @@ const TaskDescription: React.FC<TaskDescriptionProps> = () => {
               <span className="fw-bold">Sentence to be recorded</span>."
             </li>
             <li>
-              Rate the "<span className="fw-bold">Fluency</span>" of the
-              sentence:
+              Rate the "<span className="fw-bold">Fluency</span>" (how natural
+              the code-switched sentence feels like) of the sentence:
               <ol start="0">
                 <li>Unnatural</li>
                 <li>Not perfectly natural, but might be produced by people</li>
