@@ -1,8 +1,8 @@
 # Sentence Recorder for Code-switched Sentences
 
-This is a tool to collect read audio given sentences to record.
+This is a tool to collect read audio given code-switched sentences to record.
 
-Json files that contain the sentences should be placed at `backend/data/json/{task_id}.json` with the following format:
+Json files that contain the code-switched sentences with monolingual references should be placed at `backend/data/json/{task_id}.json` with the following format:
 
 ```json
 [
@@ -19,6 +19,7 @@ Json files that contain the sentences should be placed at `backend/data/json/{ta
 ]
 ```
 
-Users can access the web app at `{frontend_url}/task/{task_id}` (e.g., http://localhost:5173/task/sample1), where they can record the audio sentence by sentence, check the audio, and submit the audio of their choosing.
+Users can access the web app at `{frontend_url}/task/{task_id}` (e.g., http://localhost:5173/task/sample1), where they can evaluate the sentences and record the audio.
 
-The submitted audio will be saved as `backend/data/audio/{task_id}/{sentenceId}.webm` in the [Opus](https://opus-codec.org/) format.
+The audio will be saved as `backend/data/audio/{task_id}/{sentenceId}.webm` in the [Opus](https://opus-codec.org/) format.
+The metadata (sentence ID, whether the sentence is actually code-switched, whether the code-switched sentence has the same meaning as the original one, fluency, saved audio file name) will be saved as `backend/data/metadata/{task_id}.json`.
