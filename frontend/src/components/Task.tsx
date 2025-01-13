@@ -5,14 +5,19 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import TaskDescription from "./TaskDescription";
 import RecordTable from "./RecordTable";
+import ConfirmationModal from "./ConfirmationModal";
 import { SentenceEntity } from "./types";
 import config from "../config.json";
 
 const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [sentences, setSentences] = useState<SentenceEntity[] | null>(null);
+  const [originalSentences, setOriginalSentences] = useState<
+    SentenceEntity[] | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +38,7 @@ const Task = () => {
           fluency: 0,
         }));
         setSentences(initializedSentences);
+        setOriginalSentences(initializedSentences);
       } catch (error) {
         setError(error.message);
       }
@@ -66,6 +72,21 @@ const Task = () => {
       console.error("Sentences data is not loaded.");
       return;
     }
+
+    // Check if any changes were made
+    const hasChanges =
+      JSON.stringify(sentences) !== JSON.stringify(originalSentences);
+
+    if (!hasChanges) {
+      setShowConfirmation(true); // Show modal if no changes
+      return;
+    }
+
+    await proceedWithSubmission(); // Directly proceed if changes are made
+  };
+
+  const proceedWithSubmission = async () => {
+    if (!sentences) return;
 
     if (!validateRecordings(sentences)) {
       return;
@@ -139,6 +160,17 @@ const Task = () => {
         >
           Submit All Checked Recordings
         </Button>
+
+        <ConfirmationModal
+          show={showConfirmation}
+          onHide={() => setShowConfirmation(false)}
+          onConfirm={() => {
+            setShowConfirmation(false);
+            proceedWithSubmission();
+          }}
+          message="You haven't made any changes to the data. Do you still want to submit?"
+          title="No Changes Detected"
+        />
       </Container>
     </div>
   );
