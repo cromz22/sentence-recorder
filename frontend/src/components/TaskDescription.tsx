@@ -11,33 +11,33 @@ const TaskDescription: React.FC<TaskDescriptionProps> = () => {
   return (
     <Container>
       <h1>Audio Recording</h1>
-      <h5>Please read aloud the displayed sentences.</h5>
       <Card
         style={{ width: "70%" }}
         border="secondary"
         className="mx-auto my-5"
       >
         <Card.Header as="h5">Instructions</Card.Header>
-        <Card.Body>
-          <ol className="text-start fs-5">
-            <li>
+        <Card.Body className="text-start fs-5 mx-4 my-2">
+          <Card.Text>For each code-switched sentence below,</Card.Text>
+          <ol className="my-0">
+            <li className="my-2">
               Verify that the sentence is indeed code-switched, and mark the "
               <span className="fw-bold">Code-switched</span>" checkbox. If not,
               leave it unmarked and move on to the next sentence.
             </li>
-            <li>
+            <li className="my-2">
               Verify that the sentence has the same general meaning as the
               monolingual reference, and mark the "
               <span className="fw-bold">Accurate translation</span>" checkbox.
               If not, leave it unmarked and move on to the next sentence.
             </li>
-            <li>
+            <li className="my-2">
               Record yourself reading the "
               <span className="fw-bold">Sentence to be recorded</span>."
             </li>
-            <li>
+            <li className="my-2">
               Rate the "<span className="fw-bold">Fluency</span>" (how natural
-              the code-switched sentence feels like) of the sentence:
+              the code-switched sentence feels like):
               <ol start="0">
                 <li>Unnatural</li>
                 <li>Not perfectly natural, but might be produced by people</li>
