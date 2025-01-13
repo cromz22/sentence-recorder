@@ -9,9 +9,9 @@ The code is written with [TypeScript](https://www.typescriptlang.org/) + [React]
 
 - To install dependencies for this project, run:
 
-    ```
-    bun install
-    ```
+  ```
+  bun install
+  ```
 
 ## Development
 
@@ -19,20 +19,20 @@ The code is written with [TypeScript](https://www.typescriptlang.org/) + [React]
 
 - To start the development server, run:
 
-    ```
-    bunx --bun vite
-    ```
+  ```
+  bunx --bun vite
+  ```
 
-    The app starts at [http://localhost:5173](http://localhost:5173) by default.
+  The app starts at [http://localhost:5173](http://localhost:5173) by default.
 
 - For linting, run:
 
-    ```
-    bun run lint
-    ```
+  ```
+  bun run lint
+  ```
 
 - For formatting, run:
 
-    ```
-    bun prettier --write .
-    ```
+  ```
+  bun prettier --write .
+  ```
