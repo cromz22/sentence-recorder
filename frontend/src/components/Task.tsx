@@ -70,7 +70,10 @@ const Task = () => {
       return;
     }
 
-    // Identify unchanged rows
+    if (!validateRecordings(sentences)) {
+      return;
+    }
+
     const unchanged = sentences
       .map((sentence, index) =>
         !sentence.audioUrl &&
@@ -93,10 +96,6 @@ const Task = () => {
 
   const proceedWithSubmission = async () => {
     if (!sentences) return;
-
-    if (!validateRecordings(sentences)) {
-      return;
-    }
 
     const processedData = await Promise.all(
       sentences.map(async (sentence) => {
