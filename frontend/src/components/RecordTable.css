@@ -6,8 +6,8 @@ tbody > tr {
   height: 4em;
 }
 
-.table > tbody > tr > td,
-.table > thead > tr > td {
+.table > thead > tr > td,
+.table > tbody > tr > td {
   vertical-align: middle;
 }
 
@@ -39,11 +39,7 @@ tbody > tr {
   transform: scale(1.5);
 }
 
-.table > thead > tr > td:first-child > div:nth-child(2) {
-  color: gray;
-  font-size: 0.9em;
-}
-
+.table > thead > tr > td:first-child > div:nth-child(2),
 .table > tbody > tr > td:first-child > div:nth-child(2) {
   color: gray;
   font-size: 0.9em;
