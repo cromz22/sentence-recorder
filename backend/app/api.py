@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from pydantic import BaseModel
 import base64
+from typing import Optional
 
 
 app = FastAPI()
@@ -46,22 +47,46 @@ def read_json(task_id: str):
 
 class Recording(BaseModel):
     sentenceId: str
-    audioUrl: str
+    audioUrl: Optional[str]
+    isCodeSwitched: bool
+    isAccurateTranslation: bool
+    fluency: int
 
 
 @app.post("/submit-recordings/{task_id}")
 async def submit_recordings(recordings: list[Recording], task_id: str):
     audio_dir = Path(f"data/audio/{task_id}")
+    metadata_dir = Path(f"data/metadata")
     audio_dir.mkdir(parents=True, exist_ok=True)
+    metadata_dir.mkdir(parents=True, exist_ok=True)
 
     if not recordings:
         raise HTTPException(status_code=400, detail="No recordings provided.")
 
     try:
+        all_metadata = []
+
         for recording in recordings:
-            with open(audio_dir / f"{recording.sentenceId}.webm", "wb") as f:
-                f.write(base64.b64decode(recording.audioUrl.split(",")[1]))
-        return {"message": "Recordings submitted successfully."}
+            audio_file = None
+
+            if recording.audioUrl:
+                audio_file = f"{recording.sentenceId}.webm"
+                with open(audio_dir / audio_file, "wb") as f:
+                    f.write(base64.b64decode(recording.audioUrl.split(",")[1]))
+
+            metadata = {
+                "sentenceId": recording.sentenceId,
+                "isCodeSwitched": recording.isCodeSwitched,
+                "isAccurateTranslation": recording.isAccurateTranslation,
+                "fluency": recording.fluency,
+                "audioFile": audio_file
+            }
+            all_metadata.append(metadata)
+
+        with open(metadata_dir / f"{task_id}.json", "w") as f:
+            json.dump(all_metadata, f)
+
+        return {"message": "Recordings and metadata submitted successfully."}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Submission failed: {str(e)}")

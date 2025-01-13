@@ -63,53 +63,22 @@ const RecordTableRow: React.FC<{
   sentenceEntity: SentenceEntity;
   isRecordingElsewhere: boolean;
   setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectionChange: (
-    id: string,
-    audioUrl: string | null,
-    isCodeSwitched: boolean,
-    isAccurateTranslation: boolean,
-    fluency: number,
-  ) => void;
+  updateSentenceEntity: (updatedEntity: SentenceEntity) => void;
 }> = ({
   sentenceEntity,
   isRecordingElsewhere,
   setIsRecordingElsewhere,
-  onSelectionChange,
+  updateSentenceEntity,
 }) => {
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true });
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isCodeSwitched, setIsCodeSwitched] = useState<boolean>(false);
-  const [isAccurateTranslation, setIsAccurateTranslation] =
-    useState<boolean>(false);
-  const [fluency, setFluency] = useState<number>(0);
 
+  // Update audioUrl in sentenceEntity when mediaBlobUrl changes
   useEffect(() => {
-    if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {
-      setAudioUrl(mediaBlobUrl);
+    if (mediaBlobUrl && mediaBlobUrl !== sentenceEntity.audioUrl) {
+      updateSentenceEntity({ ...sentenceEntity, audioUrl: mediaBlobUrl });
     }
-  }, [mediaBlobUrl, audioUrl]);
-
-  useEffect(() => {
-    onSelectionChange(
-      sentenceEntity.sentenceId,
-      audioUrl,
-      isCodeSwitched,
-      isAccurateTranslation,
-      fluency,
-    );
-  }, [
-    audioUrl,
-    isCodeSwitched,
-    isAccurateTranslation,
-    fluency,
-    onSelectionChange,
-    sentenceEntity.sentenceId,
-  ]);
-
-  const handleButtonClick = (fluency: number) => {
-    setFluency(fluency);
-  };
+  }, [mediaBlobUrl, sentenceEntity, updateSentenceEntity]);
 
   return (
     <tr className="fs-4">
@@ -119,14 +88,24 @@ const RecordTableRow: React.FC<{
       </td>
       <td>
         <RecordCheckbox
-          isChecked={isCodeSwitched}
-          onChange={setIsCodeSwitched}
+          isChecked={sentenceEntity.isCodeSwitched}
+          onChange={(isChecked) =>
+            updateSentenceEntity({
+              ...sentenceEntity,
+              isCodeSwitched: isChecked,
+            })
+          }
         />
       </td>
       <td>
         <RecordCheckbox
-          isChecked={isAccurateTranslation}
-          onChange={setIsAccurateTranslation}
+          isChecked={sentenceEntity.isAccurateTranslation}
+          onChange={(isChecked) =>
+            updateSentenceEntity({
+              ...sentenceEntity,
+              isAccurateTranslation: isChecked,
+            })
+          }
         />
       </td>
       <td>
@@ -139,15 +118,19 @@ const RecordTableRow: React.FC<{
         />
       </td>
       <td>
-        <audio src={audioUrl || "#"} controls />
+        <audio src={sentenceEntity.audioUrl || "#"} controls />
       </td>
       <td>
         <ButtonGroup>
           {[0, 1, 2].map((value) => (
             <Button
               key={value}
-              variant={fluency === value ? "primary" : "outline-primary"}
-              onClick={() => handleButtonClick(value)}
+              variant={
+                sentenceEntity.fluency === value ? "primary" : "outline-primary"
+              }
+              onClick={() =>
+                updateSentenceEntity({ ...sentenceEntity, fluency: value })
+              }
             >
               {value}
             </Button>
@@ -176,16 +159,15 @@ const RecordTableHeader: React.FC = () => (
 
 const RecordTableBody: React.FC<{
   sentences: SentenceEntity[];
-  onSelectionChange: (
-    id: string,
-    audioUrl: string | null,
-    isCodeSwitched: boolean,
-    isAccurateTranslation: boolean,
-  ) => void;
-}> = ({ sentences, onSelectionChange }) => {
-  const [isRecordingElsewhere, setIsRecordingElsewhere] =
-    useState<boolean>(false);
-
+  isRecordingElsewhere: boolean;
+  setIsRecordingElsewhere: React.Dispatch<React.SetStateAction<boolean>>;
+  updateSentenceEntity: (updatedEntity: SentenceEntity) => void;
+}> = ({
+  sentences,
+  isRecordingElsewhere,
+  setIsRecordingElsewhere,
+  updateSentenceEntity,
+}) => {
   return (
     <tbody>
       {sentences.map((sentenceEntity) => (
@@ -194,7 +176,7 @@ const RecordTableBody: React.FC<{
           sentenceEntity={sentenceEntity}
           isRecordingElsewhere={isRecordingElsewhere}
           setIsRecordingElsewhere={setIsRecordingElsewhere}
-          onSelectionChange={onSelectionChange}
+          updateSentenceEntity={updateSentenceEntity}
         />
       ))}
     </tbody>
@@ -203,62 +185,28 @@ const RecordTableBody: React.FC<{
 
 const RecordTable: React.FC<{
   sentences: SentenceEntity[];
-  onSelectionUpdate: (
-    data: {
-      sentenceId: string;
-      audioUrl: string;
-      isCodeSwitched: boolean;
-      isAccurateTranslation: boolean;
-    }[],
-  ) => void;
-}> = ({ sentences, onSelectionUpdate }) => {
-  const [recordedData, setRecordedData] = useState<
-    {
-      sentenceId: string;
-      audioUrl: string;
-      isCodeSwitched: boolean;
-      isAccurateTranslation: boolean;
-    }[]
-  >([]);
+  setSentences: React.Dispatch<React.SetStateAction<SentenceEntity[]>>;
+}> = ({ sentences, setSentences }) => {
+  const [isRecordingElsewhere, setIsRecordingElsewhere] = useState(false);
 
-  const handleSelectionChange = useCallback(
-    (
-      id: string,
-      audioUrl: string | null,
-      isCodeSwitched: boolean,
-      isAccurateTranslation: boolean,
-    ) => {
-      setRecordedData((prev) =>
-        audioUrl
-          ? [
-              ...prev.filter((item) => item.sentenceId !== id),
-              {
-                sentenceId: id,
-                audioUrl,
-                isCodeSwitched,
-                isAccurateTranslation,
-              },
-            ]
-          : prev.filter((item) => item.sentenceId !== id),
-      );
-    },
-    [],
-  );
-
-  useEffect(() => {
-    onSelectionUpdate(
-      recordedData.filter(
-        (data) => data.isCodeSwitched && data.isAccurateTranslation,
+  const updateSentenceEntity = (updatedEntity: SentenceEntity) => {
+    setSentences((prev) =>
+      prev.map((sentence) =>
+        sentence.sentenceId === updatedEntity.sentenceId
+          ? updatedEntity
+          : sentence,
       ),
     );
-  }, [recordedData, onSelectionUpdate]);
+  };
 
   return (
     <Table hover>
       <RecordTableHeader />
       <RecordTableBody
         sentences={sentences}
-        onSelectionChange={handleSelectionChange}
+        isRecordingElsewhere={isRecordingElsewhere}
+        setIsRecordingElsewhere={setIsRecordingElsewhere}
+        updateSentenceEntity={updateSentenceEntity}
       />
     </Table>
   );

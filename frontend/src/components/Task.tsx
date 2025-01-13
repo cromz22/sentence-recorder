@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import TaskDescription from "./TaskDescription";
 import RecordTable from "./RecordTable";
 import { SentenceEntity } from "./types";
@@ -11,9 +12,7 @@ const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [sentences, setSentences] = useState<SentenceEntity[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRecordings, setSelectedRecordings] = useState<
-    { sentenceId: string; audioUrl: string }[]
-  >([]);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +25,14 @@ const Task = () => {
           throw new Error(`Error: ${response.statusText}`);
         }
         const sentences: SentenceEntity[] = await response.json();
-        setSentences(sentences);
+        const initializedSentences = sentences.map((sentence) => ({
+          ...sentence,
+          audioUrl: null,
+          isCodeSwitched: false,
+          isAccurateTranslation: false,
+          fluency: 0,
+        }));
+        setSentences(initializedSentences);
       } catch (error) {
         setError(error.message);
       }
@@ -34,27 +40,58 @@ const Task = () => {
     fetchSentences();
   }, [taskId]);
 
+  const validateRecordings = (sentences: SentenceEntity[]) => {
+    for (const sentence of sentences) {
+      if (
+        sentence.audioUrl &&
+        (!sentence.isCodeSwitched || !sentence.isAccurateTranslation)
+      ) {
+        setValidationError("All recordings must have both checkboxes checked.");
+        return false;
+      }
+      if (
+        !sentence.audioUrl &&
+        (sentence.isCodeSwitched || sentence.isAccurateTranslation)
+      ) {
+        setValidationError("Audio recording is missing for checked sentences.");
+        return false;
+      }
+    }
+    setValidationError(null);
+    return true;
+  };
+
   const handleSubmit = async () => {
-    if (selectedRecordings.length === 0) {
-      alert("Please select at least one recording before submitting.");
-      return; // Prevent submission if no recordings
+    if (!sentences) {
+      console.error("Sentences data is not loaded.");
+      return;
     }
 
-    const formattedData = await Promise.all(
-      selectedRecordings.map(async (data) => {
-        const response = await fetch(data.audioUrl);
-        const blob = await response.blob();
-        const reader = new FileReader();
+    if (!validateRecordings(sentences)) {
+      return;
+    }
 
-        const base64String = await new Promise<string>((resolve, reject) => {
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
+    const processedData = await Promise.all(
+      sentences.map(async (sentence) => {
+        const base64String = sentence.audioUrl
+          ? await fetch(sentence.audioUrl)
+              .then((res) => res.blob())
+              .then((blob) => {
+                const reader = new FileReader();
+                return new Promise<string>((resolve, reject) => {
+                  reader.onloadend = () => resolve(reader.result as string);
+                  reader.onerror = reject;
+                  reader.readAsDataURL(blob);
+                });
+              })
+          : null;
 
         return {
-          sentenceId: data.sentenceId,
+          sentenceId: sentence.sentenceId,
           audioUrl: base64String,
+          isCodeSwitched: sentence.isCodeSwitched,
+          isAccurateTranslation: sentence.isAccurateTranslation,
+          fluency: sentence.fluency,
         };
       }),
     );
@@ -65,7 +102,7 @@ const Task = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formattedData),
+          body: JSON.stringify(processedData),
         },
       );
 
@@ -92,10 +129,8 @@ const Task = () => {
     <div className="Task">
       <Container className="my-5 text-center">
         <TaskDescription />
-        <RecordTable
-          sentences={sentences}
-          onSelectionUpdate={setSelectedRecordings}
-        />
+        <RecordTable sentences={sentences} setSentences={setSentences} />
+        {validationError && <Alert variant="danger">{validationError}</Alert>}
         <Button
           type="submit"
           variant="outline-primary"
