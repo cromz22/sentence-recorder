@@ -11,7 +11,6 @@ const Task = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const [sentences, setSentences] = useState<SentenceEntity[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [agreed, setAgreed] = useState(false);
   const [selectedRecordings, setSelectedRecordings] = useState<
     { sentenceId: string; audioUrl: string }[]
   >([]);
@@ -36,11 +35,6 @@ const Task = () => {
   }, [taskId]);
 
   const handleSubmit = async () => {
-    if (!agreed) {
-      alert("Please agree to the terms before submitting.");
-      return; // Prevent submission if not agreed
-    }
-
     if (selectedRecordings.length === 0) {
       alert("Please select at least one recording before submitting.");
       return; // Prevent submission if no recordings
@@ -97,7 +91,7 @@ const Task = () => {
   return (
     <div className="Task">
       <Container className="my-5 text-center">
-        <TaskDescription setAgreed={setAgreed} />
+        <TaskDescription />
         <RecordTable
           sentences={sentences}
           onSelectionUpdate={setSelectedRecordings}

@@ -3,43 +3,11 @@ import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 
-interface AgreeCheckboxProps {
-  setAgreed: (value: boolean) => void;
-  agreeLabel: string;
-}
-
-const AgreeCheckbox: React.FC<AgreeCheckboxProps> = ({
-  setAgreed,
-  agreeLabel,
-}) => {
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setIsChecked(checked);
-    setAgreed(checked);
-  };
-
-  return (
-    <Form className="mb-3 fs-5 fw-bold">
-      <Form.Check
-        inline
-        label={agreeLabel}
-        checked={isChecked}
-        onChange={handleChange}
-      />
-    </Form>
-  );
-};
-
 interface TaskDescriptionProps {
   setAgreed: (value: boolean) => void;
 }
 
-const TaskDescription: React.FC<TaskDescriptionProps> = ({ setAgreed }) => {
-  const agreeLabel =
-    "I agree that my voice will be made public as a part of a dataset.";
-
+const TaskDescription: React.FC<TaskDescriptionProps> = () => {
   return (
     <Container>
       <h1>Audio Recording</h1>
