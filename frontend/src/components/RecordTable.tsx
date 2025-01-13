@@ -71,6 +71,7 @@ const RecordTableRow: React.FC<{
     id: string,
     audioUrl: string | null,
     isCodeSwitched: boolean,
+	isAccurateTranslation: boolean,
   ) => void;
 }> = ({
   sentenceEntity,
@@ -82,12 +83,13 @@ const RecordTableRow: React.FC<{
     useReactMediaRecorder({ audio: true });
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isCodeSwitched, setIsCodeSwitched] = useState<boolean>(true);
+  const [isAccurateTranslation, setIsAccurateTranslation] = useState<boolean>(true);
 
   useEffect(() => {
     if (mediaBlobUrl && mediaBlobUrl !== audioUrl) {
       setAudioUrl(mediaBlobUrl);
     }
-  }, [mediaBlobUrl, audioUrl, isCodeSwitched, onSelectionChange, sentenceEntity.sentenceId]);
+  }, [mediaBlobUrl, audioUrl, isCodeSwitched, isAccurateTranslation, onSelectionChange, sentenceEntity.sentenceId]);
 
   return (
     <tr className="fs-4">
@@ -99,6 +101,12 @@ const RecordTableRow: React.FC<{
         <RecordCheckbox
           isChecked={isCodeSwitched}
 		  onChange={setIsCodeSwitched}
+        />
+      </td>
+      <td>
+        <RecordCheckbox
+          isChecked={isAccurateTranslation}
+		  onChange={setIsAccurateTranslation}
         />
       </td>
       <td>
@@ -125,6 +133,7 @@ const RecordTableHeader: React.FC = () => (
         <div>(Monolingual reference)</div>
       </td>
       <td>Code-switched</td>
+      <td>Accurate translation</td>
       <td>Record / Stop</td>
       <td>Check the audio</td>
     </tr>
@@ -162,16 +171,16 @@ const RecordTable: React.FC<{
   onSelectionUpdate: (data: { sentenceId: string; audioUrl: string }[]) => void;
 }> = ({ sentences, onSelectionUpdate }) => {
   const [recordedData, setRecordedData] = useState<
-    { sentenceId: string; audioUrl: string; isCodeSwitched: boolean }[]
+    { sentenceId: string; audioUrl: string; isCodeSwitched: boolean, isAccurateTranslation: boolean }[]
   >([]);
 
   const handleSelectionChange = useCallback(
-    (id: string, audioUrl: string | null, isCodeSwitched: boolean) => {
+    (id: string, audioUrl: string | null, isCodeSwitched: boolean, isAccurateTranslation: boolean) => {
       setRecordedData((prev) =>
         audioUrl
           ? [
               ...prev.filter((item) => item.sentenceId !== id),
-              { sentenceId: id, audioUrl, isCodeSwitched },
+              { sentenceId: id, audioUrl, isCodeSwitched, isAccurateTranslation },
             ]
           : prev.filter((item) => item.sentenceId !== id),
       );
@@ -181,7 +190,7 @@ const RecordTable: React.FC<{
 
   useEffect(() => {
     // Filter and send only checked recordings
-    onSelectionUpdate(recordedData.filter((data) => data.isCodeSwitched));
+    onSelectionUpdate(recordedData.filter((data) => data.isCodeSwitched && isAccurateTranslation));
   }, [recordedData, onSelectionUpdate]);
 
   return (
