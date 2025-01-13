@@ -45,6 +45,7 @@ const TaskDescription: React.FC<TaskDescriptionProps> = () => {
               </ol>
             </li>
           </ol>
+          <Card.Text>Press the submission button at the bottom to save the recorded audio and metadata.</Card.Text>
         </Card.Body>
       </Card>
     </Container>
