@@ -7,6 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FormatTextdirectionLToRIcon from "@mui/icons-material/FormatTextdirectionLToR";
+import FormatTextdirectionRToLIcon from "@mui/icons-material/FormatTextdirectionRToL";
 import { useReactMediaRecorder } from "../utils/ReactMediaRecorder";
 import { SentenceEntity } from "./types";
 import "./RecordTable.css";
@@ -153,12 +155,24 @@ const RecordTableRow: React.FC<{
   );
 };
 
-const RecordTableHeader: React.FC = () => (
+const RecordTableHeader: React.FC<{
+  direction: string;
+  toggleDirection: () => void;
+}> = ({ direction, toggleDirection }) => (
   <thead>
     <tr className="fw-bold fs-5">
       <td>No.</td>
       <td>
-        <div>Sentence to be recorded</div>
+        <div>
+          Sentence to be recorded
+          <IconButton onClick={toggleDirection}>
+            {direction === "ltr" ? (
+              <FormatTextdirectionLToRIcon color="primary" />
+            ) : (
+              <FormatTextdirectionRToLIcon color="primary" />
+            )}
+          </IconButton>
+        </div>
         <div>(Monolingual reference)</div>
       </td>
       <td>Code-switched</td>
@@ -202,6 +216,9 @@ const RecordTable: React.FC<{
   setSentences: React.Dispatch<React.SetStateAction<SentenceEntity[]>>;
 }> = ({ sentences, setSentences }) => {
   const [isRecordingElsewhere, setIsRecordingElsewhere] = useState(false);
+  const [sentenceDirection, setSentenceDirection] = useState<"ltr" | "rtl">(
+    "ltr",
+  );
 
   const updateSentenceEntity = (updatedEntity: SentenceEntity) => {
     setSentences((prev) =>
@@ -213,9 +230,20 @@ const RecordTable: React.FC<{
     );
   };
 
+  const toggleDirection = () => {
+    setSentenceDirection((prev) => (prev === "ltr" ? "rtl" : "ltr"));
+    document.documentElement.style.setProperty(
+      "--text-direction",
+      sentenceDirection === "ltr" ? "rtl" : "ltr",
+    );
+  };
+
   return (
     <Table hover>
-      <RecordTableHeader />
+      <RecordTableHeader
+        direction={sentenceDirection}
+        toggleDirection={toggleDirection}
+      />
       <RecordTableBody
         sentences={sentences}
         isRecordingElsewhere={isRecordingElsewhere}

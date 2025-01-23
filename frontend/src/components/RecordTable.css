@@ -1,3 +1,7 @@
+:root {
+  --text-direction: ltr;
+}
+
 tbody > tr:hover {
   background-color: #f0f8ff;
 }
@@ -15,7 +19,9 @@ tbody > tr {
   width: 5%;
 }
 
+.table > thead > tr > td:nth-child(2),
 .table > tbody > tr > td:nth-child(2) {
+  direction: var(--text-direction);
   width: 40%;
 }
 
