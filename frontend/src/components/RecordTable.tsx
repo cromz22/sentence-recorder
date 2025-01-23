@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import StopIcon from "@mui/icons-material/Stop";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useReactMediaRecorder } from "../utils/ReactMediaRecorder";
 import { SentenceEntity } from "./types";
 import "./RecordTable.css";
@@ -72,7 +73,7 @@ const RecordTableRow: React.FC<{
   setIsRecordingElsewhere,
   updateSentenceEntity,
 }) => {
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
+  const { status, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
     useReactMediaRecorder({ audio: true });
 
   // Update audioUrl in sentenceEntity when mediaBlobUrl changes
@@ -81,6 +82,11 @@ const RecordTableRow: React.FC<{
       updateSentenceEntity({ ...sentenceEntity, audioUrl: mediaBlobUrl });
     }
   }, [mediaBlobUrl, sentenceEntity, updateSentenceEntity]);
+
+  const handleDeleteAudio = () => {
+    clearBlobUrl();
+    updateSentenceEntity({ ...sentenceEntity, audioUrl: "" });
+  };
 
   return (
     <tr className="fs-4">
@@ -122,6 +128,9 @@ const RecordTableRow: React.FC<{
       </td>
       <td>
         <audio src={sentenceEntity.audioUrl || "#"} controls />
+        <IconButton>
+          <DeleteIcon onClick={handleDeleteAudio}>Delete</DeleteIcon>
+        </IconButton>
       </td>
       <td>
         <ButtonGroup>
