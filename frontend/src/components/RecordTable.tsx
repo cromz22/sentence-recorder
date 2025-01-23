@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -48,7 +48,7 @@ const StartStopButton: React.FC<{
 const RecordCheckbox: React.FC<{
   isChecked: boolean;
   onChange: (checked: boolean) => void;
-}> = ({ isChecked, onChange, label }) => {
+}> = ({ isChecked, onChange }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.checked);
   };
@@ -128,8 +128,8 @@ const RecordTableRow: React.FC<{
       </td>
       <td>
         <audio src={sentenceEntity.audioUrl || "#"} controls />
-        <IconButton>
-          <DeleteIcon onClick={handleDeleteAudio}>Delete</DeleteIcon>
+        <IconButton onClick={handleDeleteAudio}>
+          <DeleteIcon />
         </IconButton>
       </td>
       <td>

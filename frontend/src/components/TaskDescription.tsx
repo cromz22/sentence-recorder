@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React  from "react";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
 
 interface TaskDescriptionProps {
   setAgreed: (value: boolean) => void;
