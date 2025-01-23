@@ -53,7 +53,7 @@ const Task = () => {
         (!sentence.isCodeSwitched || !sentence.isAccurateTranslation)
       ) {
         errors.push(
-          `Sentence No. ${sentenceNo}: All recordings must have both checkboxes checked.`,
+          `Sentence No. ${sentenceNo}: The recordings must have both checkboxes checked. Either delete the audio or check the checkboxes.`,
         );
       }
       if (
